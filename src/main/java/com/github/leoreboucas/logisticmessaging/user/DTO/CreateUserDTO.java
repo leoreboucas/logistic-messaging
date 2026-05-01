@@ -1,6 +1,7 @@
-package com.github.leoreboucas.logisticmessaging.user;
+package com.github.leoreboucas.logisticmessaging.user.DTO;
 
 
+import com.github.leoreboucas.logisticmessaging.user.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -3,8 +3,6 @@ package com.github.leoreboucas.logisticmessaging.infra.client;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -28,8 +26,8 @@ public class LogisticClient {
                 .build();
     }
 
-    public ResponseEntity<?> confirmUserValidity(String document, String role) {
-        return restClient.get().uri("/internal/usuarios/verify?document={document}&role={role}", document, role)
+    public void confirmUserValidity(String document, String role) {
+        restClient.get().uri("/internal/usuarios/verify?document={document}&role={role}", document, role)
                 .retrieve().toBodilessEntity();
     }
 }

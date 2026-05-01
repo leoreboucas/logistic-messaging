@@ -1,6 +1,7 @@
 package com.github.leoreboucas.logisticmessaging.user;
 
 import com.github.leoreboucas.logisticmessaging.infra.client.LogisticClient;
+import com.github.leoreboucas.logisticmessaging.user.DTO.CreateUserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
