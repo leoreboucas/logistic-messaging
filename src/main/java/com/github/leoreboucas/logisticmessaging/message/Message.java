@@ -20,8 +20,8 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @ManyToOne
-    @JoinColumn(name = "conversation_id")
-    private Conversation conversationId;
+    @JoinColumn(name = "conversation")
+    private Conversation conversation;
     @ManyToOne
     @JoinColumn(name = "sender")
     private User sender;
