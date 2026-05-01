@@ -1,0 +1,44 @@
+package com.github.leoreboucas.logisticmessaging.websocket;
+
+import com.github.leoreboucas.logisticmessaging.infra.security.JwtService;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class JwtChannelInterceptor implements ChannelInterceptor {
+    private final JwtService jwtService;
+
+    @Override
+    public Message<?> preSend (@NonNull Message<?> message, @NonNull MessageChannel channel) {
+        try {
+            StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+
+            if(accessor.getCommand() == StompCommand.CONNECT) {
+                String bearerToken = accessor.getFirstNativeHeader("Authorization");
+
+                if(bearerToken == null) {
+                    throw new RuntimeException("Token de autenticação ausente.");
+                }
+
+                String token = bearerToken.split(" ")[1];
+
+                if (jwtService.isTokenValid(token)) {
+                    return message;
+                } else {
+                    throw new RuntimeException("Token inválido ou expirado.");
+                }
+            }
+            return message;
+        } catch (Exception e) {
+            throw new RuntimeException("Token inválido ou expirado.");
+        }
+    }
+}
