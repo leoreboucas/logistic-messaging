@@ -19,16 +19,16 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @ManyToOne
-    @JoinColumn(name = "user1_id")
-    private User user1Id;
+    @JoinColumn(name = "user1")
+    private User user1;
     @ManyToOne
-    @JoinColumn(name = "user2_id")
-    private User user2Id;
+    @JoinColumn(name = "user2")
+    private User user2;
     @Column(unique = true)
     private String channelId;
     @Enumerated(value = EnumType.STRING)
     private ConversationStatus status;
-    @Column(name = "contact_reason", nullable = false)
+    @Column(name = "contact_reason")
     private String contactReason;
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -36,6 +36,6 @@ public class Conversation {
     @PrePersist
     private void PrePersist() {
         this.createdAt = LocalDateTime.now();
-        this.channelId = user1Id.getId() + "_" + user2Id.getId();
+        this.channelId = user1.getId() + "_" + user2.getId();
     }
 }
