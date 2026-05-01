@@ -9,7 +9,8 @@ import jakarta.validation.constraints.Pattern;
 public record CreateUserDTO(
         @NotBlank(message = "O nome é obrigatório") String firstName,
         @NotBlank(message = "Sobrenome é obrigatório.") String secondName,
-        @Pattern(regexp ="(^\\\\d{3}\\\\.?\\\\d{3}\\\\.?\\\\d{3}\\\\-?\\\\d{2}$)|(^\\\\d{2}\\\\.?\\\\d{3}\\\\.?\\\\d{3}\\\\/?\\\\d{4}\\\\-?\\\\-?\\d{2}$)", message = "Documento inválido. Informe um CPF ou CNPJ válido.") String document,
+        @Pattern(regexp ="(^\\\\d{3}\\\\.?\\\\d{3}\\\\.?\\\\d{3}\\\\-?\\\\d{2}$)|(^\\\\d{2}\\\\.?\\\\d{3}\\\\.?\\\\d{3}\\\\/?\\\\d{4}\\\\-?\\\\-?\\d{2}$)", message = "Documento inválido. Informe um CPF ou CNPJ válido.")
+        String document,
         @Email(message = "Email inválido.")  String email,
         @Pattern(
                 regexp ="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,}$",
