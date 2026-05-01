@@ -10,6 +10,6 @@ public class RedisMessagePublisher {
     private final RedisTemplate<String, String> redisTemplate;
 
     public void publish(String channel, String message) {
-        redisTemplate.convertAndSend(channel, message);
+        redisTemplate.convertAndSend("conversation-" + channel, message);
     }
 }

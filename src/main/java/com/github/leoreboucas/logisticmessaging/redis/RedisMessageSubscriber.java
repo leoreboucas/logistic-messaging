@@ -19,7 +19,7 @@ public class RedisMessageSubscriber implements MessageListener {
     public void onMessage(@NonNull Message message, byte @Nullable [] pattern) {
         byte[] channelBytes = message.getChannel();
         String channelName = new String(channelBytes, StandardCharsets.UTF_8);
-        
-        simpMessagingTemplate.convertAndSend("/topic/conversations/" + channelName, new String(message.getBody()));
+        String conversationId = channelName.replace("conversation-", "");
+        simpMessagingTemplate.convertAndSend("/topic/conversations/" + conversationId, new String(message.getBody()));
     }
 }
