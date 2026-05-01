@@ -26,6 +26,8 @@ public class Conversation {
     private User user2;
     @Column(unique = true)
     private String channelId;
+    @Column(name = "current_session_id")
+    private UUID currentSessionId;
     @Enumerated(value = EnumType.STRING)
     private ConversationStatus status;
     @Column(name = "contact_reason")
@@ -37,5 +39,7 @@ public class Conversation {
     private void PrePersist() {
         this.createdAt = LocalDateTime.now();
         this.channelId = user1.getId() + "_" + user2.getId();
+        this.currentSessionId = UUID.randomUUID();
+        this.status = ConversationStatus.ABERTO;
     }
 }

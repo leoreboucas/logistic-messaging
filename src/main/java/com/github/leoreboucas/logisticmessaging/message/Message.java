@@ -22,6 +22,8 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "conversation")
     private Conversation conversation;
+    @Column(name = "session_id")
+    private UUID sessionId;
     @ManyToOne
     @JoinColumn(name = "sender")
     private User sender;
