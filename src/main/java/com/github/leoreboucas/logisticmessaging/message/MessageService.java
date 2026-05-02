@@ -19,13 +19,11 @@ public class MessageService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Message saveMessage(String conversationId, String senderDocument, String content) {
+    public void saveMessage(String conversationId, String senderDocument, String content, Boolean isBot ) {
 
         Conversation conversation = conversationRepository.findById(UUID.fromString(conversationId))
                 .orElseThrow(() -> new IllegalArgumentException("Conversa não encontrada"));
 
-        User user = Optional.ofNullable(userRepository.findByDocument(senderDocument))
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
 
         if(content == null || content.trim().isEmpty()) {
@@ -34,11 +32,17 @@ public class MessageService {
 
         Message message = new Message();
         message.setContent(content);
-        message.setSender(user);
+        if (!isBot) {
+            User user = Optional.ofNullable(userRepository.findByDocument(senderDocument))
+                    .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+            message.setSender(user);
+        } else {
+            message.setBot(true);
+        }
+        message.setSessionId(conversation.getCurrentSessionId());
         message.setConversation(conversation);
 
         messageRepository.save(message);
 
-        return message;
     }
 }
