@@ -36,7 +36,7 @@ public class BotService {
     public String generateResponse(String systemPrompt, List<Content> history) {
         GenerateContentResponse response =
                 client.models.generateContent(
-                        "gemini-2.5-flash",
+                        "gemini-3.1-flash-lite-preview",
                         history,
                         GenerateContentConfig.builder()
                                 .systemInstruction(Content.fromParts(Part.fromText(systemPrompt)))

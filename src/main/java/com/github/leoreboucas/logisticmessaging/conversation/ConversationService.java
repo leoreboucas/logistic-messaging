@@ -60,9 +60,11 @@ public class ConversationService {
         switch (user.getRole()) {
             case CUSTOMER -> {
                 List<OrdersDTO> orders = logisticClient.getOrdersForCostumer(userDocument);
+                System.out.println("Pedidos encontrados: " + orders);
                 String ordersFormatted = orders.stream()
                         .map(o -> "- Pedido %s | Status: %s | %s/%s".formatted(o.trackingCode(), o.status(), o.city(), o.state()))
                         .collect(Collectors.joining("\n"));
+                System.out.println(ordersFormatted);
                 String customerPrompt = BotPrompts.CUSTOMER_PROMPT;
                 customerPrompt = customerPrompt.replace("{LISTA_PEDIDOS}", ordersFormatted);
                 basePrompt = basePrompt + customerPrompt;
@@ -78,7 +80,7 @@ public class ConversationService {
                         .collect(Collectors.joining("\n"));
 
                 String deliveryManPrompt = BotPrompts.DELIVERY_MAN_PROMPT;
-                
+
                 deliveryManPrompt = deliveryManPrompt.replace("{LISTA_PARCIAIS}", parciaisFormatted);
                 deliveryManPrompt = deliveryManPrompt.replace("{LISTA_FINAIS}", finaisFormatted);
                 basePrompt = basePrompt + deliveryManPrompt;

@@ -38,12 +38,20 @@ public class LogisticClient {
     }
 
     public List<OrdersDTO> getOrdersForCostumer(String customerCpf) {
-        return restClient.get().uri("/internal/pedidos?customerCpf={customerCpf}", customerCpf).retrieve().body(new ParameterizedTypeReference<>() {
-        });
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/internal/pedidos")
+                        .queryParam("customerCpf", customerCpf)
+                        .build())
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {});
     }
 
     public DeliveryManOrdersDTO getOrdersForDeliveryMan(String deliveryManCpf) {
-        return restClient.get().uri("/internal/pedidos?deliveryManCpf={deliveryManCpf}", deliveryManCpf).retrieve().body(DeliveryManOrdersDTO.class);
+        return restClient.get().uri(uriBuilder -> uriBuilder
+                .path("/internal/pedidos")
+                .queryParam("deliveryManCpf", deliveryManCpf)
+                .build()).retrieve().body(DeliveryManOrdersDTO.class);
     }
 
 }
