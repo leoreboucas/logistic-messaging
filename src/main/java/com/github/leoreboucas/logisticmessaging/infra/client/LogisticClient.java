@@ -4,7 +4,6 @@ import com.github.leoreboucas.logisticmessaging.infra.client.DTO.DeliveryManOrde
 import com.github.leoreboucas.logisticmessaging.infra.client.DTO.OrdersDTO;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;

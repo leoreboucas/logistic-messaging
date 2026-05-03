@@ -2,6 +2,9 @@ package com.github.leoreboucas.logisticmessaging.user;
 
 import com.github.leoreboucas.logisticmessaging.auth.LoginUserDTO;
 import com.github.leoreboucas.logisticmessaging.infra.client.LogisticClient;
+import com.github.leoreboucas.logisticmessaging.infra.exception.AuthenticationException;
+import com.github.leoreboucas.logisticmessaging.infra.exception.BusinessException;
+import com.github.leoreboucas.logisticmessaging.infra.exception.NotFoundException;
 import com.github.leoreboucas.logisticmessaging.infra.security.JwtService;
 import com.github.leoreboucas.logisticmessaging.user.DTO.CreateUserDTO;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +26,14 @@ public class UserService {
         try {
             logisticClient.confirmUserValidity(createUserDTO.document(), String.valueOf(createUserDTO.role()));
         } catch (HttpClientErrorException.NotFound e) {
-            throw new IllegalArgumentException("Usuário não encontrado no sistema logistic.");
+            throw new NotFoundException("Usuário não encontrado no sistema logistic.");
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao comunicar com o serviço logistic.");
+            throw new BusinessException("Erro ao comunicar com o serviço logistic.");
         }
 
         Optional.ofNullable(userRepository.findByDocument(createUserDTO.document()))
-                .ifPresent(u -> {;
-                    throw new IllegalArgumentException("Usuário já está cadastrado.");
+                .ifPresent(u -> {
+                    throw new BusinessException("Usuário já está cadastrado.");
                 });
 
         User newUser = new User();
@@ -47,12 +50,12 @@ public class UserService {
 
     public String login (LoginUserDTO loginUserDTO) {
         User user = Optional.ofNullable(userRepository.findByDocument(loginUserDTO.document()))
-                .orElseThrow(() -> new IllegalArgumentException("Usuário e/ou senha incorretos."));
+                .orElseThrow(() -> new AuthenticationException("Usuário e/ou senha incorretos."));
 
         if(passwordEncoder.matches(loginUserDTO.password(), user.getPassword())) {
             return jwtService.generateToken(user.getDocument(), String.valueOf(user.getRole()));
         } else {
-            throw new IllegalArgumentException("Usuário e/ou senha incorretos.");
+            throw new AuthenticationException("Usuário e/ou senha incorretos.");
         }
     }
 }

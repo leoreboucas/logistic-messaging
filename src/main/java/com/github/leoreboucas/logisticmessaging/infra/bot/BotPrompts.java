@@ -10,6 +10,7 @@ public class BotPrompts {
             - Não invente informações que não foram fornecidas pelo usuário
             - Quando tiver informações suficientes para encaminhar, responda APENAS com o seguinte JSON válido, sem texto adicional:
             {"encaminhado": true, "setor": "<setor>", "resumo": "<resumo do problema>"}
+            - Ao encaminhar as informações, envie uma mensagem ao usuário informando que está encaminhando ele para um atendente, e que ele receberá uma resposta em breve.
             
             Setores disponíveis: rastreamento, cancelamento, prazo_entrega, item_danificado, endereco_incorreto, pagamento, rota, pedido_nao_localizado, impossibilidade_entrega, outro
             

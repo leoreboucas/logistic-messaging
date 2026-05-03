@@ -3,6 +3,7 @@ package com.github.leoreboucas.logisticmessaging.message;
 import com.github.leoreboucas.logisticmessaging.conversation.Conversation;
 import com.github.leoreboucas.logisticmessaging.conversation.ConversationRepository;
 import com.github.leoreboucas.logisticmessaging.conversation.ConversationStatus;
+import com.github.leoreboucas.logisticmessaging.infra.exception.NotFoundException;
 import com.github.leoreboucas.logisticmessaging.user.User;
 import com.github.leoreboucas.logisticmessaging.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -23,7 +24,7 @@ public class MessageService {
     public void saveMessage(String conversationId, String senderDocument, String content, Boolean isBot ) {
 
         Conversation conversation = conversationRepository.findById(UUID.fromString(conversationId))
-                .orElseThrow(() -> new IllegalArgumentException("Conversa não encontrada"));
+                .orElseThrow(() -> new NotFoundException("Conversa não encontrada"));
 
 
         if (conversation.getStatus() == ConversationStatus.ABERTO && !isBot) {
@@ -32,14 +33,14 @@ public class MessageService {
         }
 
         if(content == null || content.trim().isEmpty()) {
-            throw new IllegalArgumentException("Conteúdo da mensagem não pode ser vazio");
+            throw new NotFoundException("Conteúdo da mensagem não pode ser vazio");
         }
 
         Message message = new Message();
         message.setContent(content);
         if (!isBot) {
             User user = Optional.ofNullable(userRepository.findByDocument(senderDocument))
-                    .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                    .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
             message.setSender(user);
         } else {
             message.setBot(true);

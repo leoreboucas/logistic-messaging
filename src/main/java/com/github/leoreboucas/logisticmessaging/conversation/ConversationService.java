@@ -5,6 +5,7 @@ import com.github.leoreboucas.logisticmessaging.infra.bot.BotPrompts;
 import com.github.leoreboucas.logisticmessaging.infra.client.DTO.DeliveryManOrdersDTO;
 import com.github.leoreboucas.logisticmessaging.infra.client.DTO.OrdersDTO;
 import com.github.leoreboucas.logisticmessaging.infra.client.LogisticClient;
+import com.github.leoreboucas.logisticmessaging.infra.exception.BusinessException;
 import com.github.leoreboucas.logisticmessaging.user.User;
 import com.github.leoreboucas.logisticmessaging.user.UserRepository;
 import com.github.leoreboucas.logisticmessaging.user.UserRole;
@@ -24,16 +25,16 @@ public class ConversationService {
 
     public Conversation createConversation (UserRecipientDTO userRecipientDTO, String user1Document) {
         User user1 = Optional.ofNullable(userRepository.findByDocument(user1Document))
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado."));
         User user2 = Optional.ofNullable(userRepository.findByDocument(userRecipientDTO.user2Document()))
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado."));
 
         if(user1.getRole() != UserRole.ENTERPRISE && user2.getRole() != UserRole.ENTERPRISE) {
-            throw new RuntimeException("Pelo menos um dos usuários deve ser uma empresa.");
+            throw new BusinessException("Pelo menos um dos usuários deve ser uma empresa.");
         }
 
         if(user1.getRole() == UserRole.ENTERPRISE && user2.getRole() == UserRole.ENTERPRISE) {
-            throw new RuntimeException("Não é permitido criar uma conversa entre duas empresas.");
+            throw new BusinessException("Não é permitido criar uma conversa entre duas empresas.");
         }
 
         Optional<Conversation> conversation = Optional.ofNullable(conversationRepository.findByUser(user1, user2));
@@ -52,7 +53,7 @@ public class ConversationService {
 
     public String buildSystemPrompt(Conversation conversation, String userDocument) {
         User user = Optional.ofNullable(userRepository.findByDocument(userDocument))
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado."));
 
         String basePrompt = BotPrompts.BASE_PROMPT;
         basePrompt = basePrompt.replace("{ROLE}", user.getRole().toString());
@@ -85,9 +86,8 @@ public class ConversationService {
                 deliveryManPrompt = deliveryManPrompt.replace("{LISTA_FINAIS}", finaisFormatted);
                 basePrompt = basePrompt + deliveryManPrompt;
             }
-            default -> {
-                basePrompt = basePrompt + BotPrompts.ENTERPRISE_PROMPT;
-            }
+            default -> basePrompt = basePrompt + BotPrompts.ENTERPRISE_PROMPT;
+
         }
         return basePrompt;
 }}

@@ -1,7 +1,7 @@
 package com.github.leoreboucas.logisticmessaging.websocket;
 
+import com.github.leoreboucas.logisticmessaging.infra.exception.BusinessException;
 import com.github.leoreboucas.logisticmessaging.infra.security.JwtService;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.messaging.Message;
@@ -26,7 +26,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
                 String bearerToken = accessor.getFirstNativeHeader("Authorization");
 
                 if(bearerToken == null) {
-                    throw new RuntimeException("Token de autenticação ausente.");
+                    throw new BusinessException("Token de autenticação ausente.");
                 }
 
                 String token = bearerToken.split(" ")[1];
@@ -36,12 +36,12 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
                     accessor.setUser(() -> subject); // seta o Principal
                     return message;
                 } else {
-                    throw new RuntimeException("Token inválido ou expirado.");
+                    throw new BusinessException("Token inválido ou expirado.");
                 }
             }
             return message;
         } catch (Exception e) {
-            throw new RuntimeException("Token inválido ou expirado.");
+            throw new BusinessException("Token inválido ou expirado.");
         }
     }
 }
