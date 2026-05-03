@@ -27,6 +27,7 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "sender")
     private User sender;
+    @Column(columnDefinition = "TEXT")
     private String content;
     @Column(name = "is_bot")
     private boolean isBot;

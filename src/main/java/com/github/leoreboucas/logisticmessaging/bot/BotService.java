@@ -36,10 +36,12 @@ public class BotService {
     public String generateResponse(String systemPrompt, List<Content> history) {
         GenerateContentResponse response =
                 client.models.generateContent(
-                        "gemini-2.0-flash",
+                        "gemini-2.5-flash",
                         history,
-                        GenerateContentConfig.builder().systemInstruction(Content.fromParts(Part.fromText(systemPrompt))
-                ).build());
+                        GenerateContentConfig.builder()
+                                .systemInstruction(Content.fromParts(Part.fromText(systemPrompt)))
+                                .responseMimeType("application/json")
+                                .build());
 
         return response.text();
     }
