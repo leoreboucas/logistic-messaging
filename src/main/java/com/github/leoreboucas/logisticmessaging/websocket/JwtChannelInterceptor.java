@@ -9,6 +9,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +20,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend (@NonNull Message<?> message, @NonNull MessageChannel channel) {
         try {
-            StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+            StompHeaderAccessor accessor = (StompHeaderAccessor) MessageHeaderAccessor.getMutableAccessor(message);
 
             if(accessor.getCommand() == StompCommand.CONNECT) {
                 String bearerToken = accessor.getFirstNativeHeader("Authorization");
@@ -31,6 +32,8 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
                 String token = bearerToken.split(" ")[1];
 
                 if (jwtService.isTokenValid(token)) {
+                    String subject = jwtService.extractSubject(token);
+                    accessor.setUser(() -> subject); // seta o Principal
                     return message;
                 } else {
                     throw new RuntimeException("Token inválido ou expirado.");

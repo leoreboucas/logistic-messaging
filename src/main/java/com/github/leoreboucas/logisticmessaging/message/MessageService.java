@@ -2,6 +2,7 @@ package com.github.leoreboucas.logisticmessaging.message;
 
 import com.github.leoreboucas.logisticmessaging.conversation.Conversation;
 import com.github.leoreboucas.logisticmessaging.conversation.ConversationRepository;
+import com.github.leoreboucas.logisticmessaging.conversation.ConversationStatus;
 import com.github.leoreboucas.logisticmessaging.user.User;
 import com.github.leoreboucas.logisticmessaging.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -25,6 +26,10 @@ public class MessageService {
                 .orElseThrow(() -> new IllegalArgumentException("Conversa não encontrada"));
 
 
+        if (conversation.getStatus() == ConversationStatus.ABERTO && !isBot) {
+            conversation.setStatus(ConversationStatus.TRIAGEM);
+            conversationRepository.save(conversation);
+        }
 
         if(content == null || content.trim().isEmpty()) {
             throw new IllegalArgumentException("Conteúdo da mensagem não pode ser vazio");

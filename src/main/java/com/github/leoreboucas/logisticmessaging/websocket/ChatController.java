@@ -4,6 +4,7 @@ import com.github.leoreboucas.logisticmessaging.bot.BotService;
 import com.github.leoreboucas.logisticmessaging.conversation.Conversation;
 import com.github.leoreboucas.logisticmessaging.conversation.ConversationRepository;
 import com.github.leoreboucas.logisticmessaging.conversation.ConversationService;
+import com.github.leoreboucas.logisticmessaging.conversation.ConversationStatus;
 import com.github.leoreboucas.logisticmessaging.message.MessageService;
 import com.github.leoreboucas.logisticmessaging.redis.RedisMessagePublisher;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +30,13 @@ public class ChatController {
 
         Conversation conversation =conversationRepository.findById(UUID.fromString(conversationId))
                 .orElseThrow(() -> new RuntimeException("Conversa não encontrada."));
-        String botResponse = botService.processMessage(conversation, principal.getName());
-        messageService.saveMessage(conversationId, null, botResponse, true);
+        
         redisMessagePublisher.publish(conversationId, message);
-        redisMessagePublisher.publish(conversationId, botResponse);
+        if (conversation.getStatus() == ConversationStatus.TRIAGEM) {
+            String botResponse = botService.processMessage(conversation, principal.getName());
+            messageService.saveMessage(conversationId, null, botResponse, true);
+            redisMessagePublisher.publish(conversationId, botResponse);
+        }
 
     }
 }
