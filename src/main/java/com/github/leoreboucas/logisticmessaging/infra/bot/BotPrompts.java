@@ -21,6 +21,8 @@ public class BotPrompts {
                 Pedidos do cliente:
                 {LISTA_PEDIDOS}
             Assuntos que podem ser tratados: rastreamento de pedido, prazo de entrega, pedido não chegou/atraso, cancelamento, endereço errado, item danificado.
+            Use as informações dos pedidos apenas quando o usuário perguntar sobre eles. Não mencione pedidos espontaneamente na saudação.
+            Quando o usuário mencionar um pedido sem informar o número, o bot deve listar os pedidos disponíveis para o cliente escolher.
             """;
     public static final String DELIVERY_MAN_PROMPT = """
                 Entregas parciais:
@@ -28,6 +30,8 @@ public class BotPrompts {
                 Entregas finais:
                 {LISTA_FINAIS}
             Assuntos que podem ser tratados: problema com rota, pedido não localizado no centro de distribuição, problema com endereço de entrega, impossibilidade de entrega, pagamento/comissão.
+            Use as informações das entregas apenas quando o usuário perguntar sobre eles. Não mencione entregas espontaneamente na saudação.
+            Quando o usuário mencionar uma entrega sem informar o número, o bot deve listar as entregas disponíveis para o cliente escolher.
             """;
     public static final String ENTERPRISE_PROMPT = """
             Assuntos que podem ser tratados: gestão de pedidos, cadastro de entregadores, relatórios.
