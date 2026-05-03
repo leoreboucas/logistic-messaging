@@ -23,21 +23,22 @@ public class UserService {
     private final JwtService jwtService;
 
     public void register (CreateUserDTO createUserDTO) {
+
         try {
-            logisticClient.confirmUserValidity(createUserDTO.document(), String.valueOf(createUserDTO.role()));
+            logisticClient.confirmUserValidity(documentFormatted(createUserDTO.document()), String.valueOf(createUserDTO.role()));
         } catch (HttpClientErrorException.NotFound e) {
             throw new NotFoundException("Usuário não encontrado no sistema logistic.");
         } catch (Exception e) {
             throw new BusinessException("Erro ao comunicar com o serviço logistic.");
         }
 
-        Optional.ofNullable(userRepository.findByDocument(createUserDTO.document()))
+        Optional.ofNullable(userRepository.findByDocument(documentFormatted(createUserDTO.document())))
                 .ifPresent(u -> {
                     throw new BusinessException("Usuário já está cadastrado.");
                 });
 
         User newUser = new User();
-        newUser.setDocument(createUserDTO.document());
+        newUser.setDocument(documentFormatted(createUserDTO.document()));
         newUser.setFirstName(createUserDTO.firstName());
         newUser.setSecondName(createUserDTO.secondName());
         newUser.setEmail(createUserDTO.email());
@@ -49,7 +50,8 @@ public class UserService {
     }
 
     public String login (LoginUserDTO loginUserDTO) {
-        User user = Optional.ofNullable(userRepository.findByDocument(loginUserDTO.document()))
+
+        User user = Optional.ofNullable(userRepository.findByDocument(documentFormatted(loginUserDTO.document())))
                 .orElseThrow(() -> new AuthenticationException("Usuário e/ou senha incorretos."));
 
         if(passwordEncoder.matches(loginUserDTO.password(), user.getPassword())) {
@@ -57,5 +59,12 @@ public class UserService {
         } else {
             throw new AuthenticationException("Usuário e/ou senha incorretos.");
         }
+    }
+
+    private String documentFormatted (String document) {
+        return document.trim()
+                .replace(".", "")
+                .replace("-", "")
+                .replace("/", "");
     }
 }

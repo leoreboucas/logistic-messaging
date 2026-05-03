@@ -65,7 +65,6 @@ public class ConversationService {
                 String ordersFormatted = orders.stream()
                         .map(o -> "- Pedido %s | Status: %s | %s/%s".formatted(o.trackingCode(), o.status(), o.city(), o.state()))
                         .collect(Collectors.joining("\n"));
-                System.out.println(ordersFormatted);
                 String customerPrompt = BotPrompts.CUSTOMER_PROMPT;
                 customerPrompt = customerPrompt.replace("{LISTA_PEDIDOS}", ordersFormatted);
                 basePrompt = basePrompt + customerPrompt;
