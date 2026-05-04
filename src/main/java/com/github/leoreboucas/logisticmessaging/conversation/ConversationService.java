@@ -6,6 +6,7 @@ import com.github.leoreboucas.logisticmessaging.infra.client.DTO.DeliveryManOrde
 import com.github.leoreboucas.logisticmessaging.infra.client.DTO.OrdersDTO;
 import com.github.leoreboucas.logisticmessaging.infra.client.LogisticClient;
 import com.github.leoreboucas.logisticmessaging.infra.exception.BusinessException;
+import com.github.leoreboucas.logisticmessaging.infra.exception.NotFoundException;
 import com.github.leoreboucas.logisticmessaging.user.User;
 import com.github.leoreboucas.logisticmessaging.user.UserRepository;
 import com.github.leoreboucas.logisticmessaging.user.UserRole;
