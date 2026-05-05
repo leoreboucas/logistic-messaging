@@ -25,10 +25,11 @@ public class ConversationService {
     private final LogisticClient logisticClient;
 
     public Conversation createConversation (UserRecipientDTO userRecipientDTO, String user1Document) {
+        
         User user1 = Optional.ofNullable(userRepository.findByDocument(user1Document))
-                .orElseThrow(() -> new BusinessException("Usuário não encontrado."));
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
         User user2 = Optional.ofNullable(userRepository.findByDocument(userRecipientDTO.user2Document()))
-                .orElseThrow(() -> new BusinessException("Usuário não encontrado."));
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
 
         if(user1.getRole() != UserRole.ENTERPRISE && user2.getRole() != UserRole.ENTERPRISE) {
             throw new BusinessException("Pelo menos um dos usuários deve ser uma empresa.");

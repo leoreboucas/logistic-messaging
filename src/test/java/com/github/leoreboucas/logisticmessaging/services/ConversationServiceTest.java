@@ -6,6 +6,7 @@ import com.github.leoreboucas.logisticmessaging.conversation.ConversationService
 import com.github.leoreboucas.logisticmessaging.conversation.DTO.UserRecipientDTO;
 import com.github.leoreboucas.logisticmessaging.infra.client.LogisticClient;
 import com.github.leoreboucas.logisticmessaging.infra.exception.BusinessException;
+import com.github.leoreboucas.logisticmessaging.infra.exception.NotFoundException;
 import com.github.leoreboucas.logisticmessaging.user.User;
 import com.github.leoreboucas.logisticmessaging.user.UserRepository;
 import com.github.leoreboucas.logisticmessaging.user.UserRole;
@@ -47,7 +48,7 @@ public class ConversationServiceTest {
             UserRecipientDTO userRecipient = userRecipientDTO();
             when(userRepository.findByDocument(user1Document)).thenReturn(null);
 
-            assertThrows(BusinessException.class, () -> conversationService.createConversation(userRecipient, user1Document));
+            assertThrows(NotFoundException.class, () -> conversationService.createConversation(userRecipient, user1Document));
 
             verify(userRepository).findByDocument(user1Document);
         }
@@ -58,7 +59,7 @@ public class ConversationServiceTest {
             when(userRepository.findByDocument(user1Document)).thenReturn(new User());
             when(userRepository.findByDocument(userRecipient.user2Document())).thenReturn(null);
 
-            assertThrows(BusinessException.class, () -> conversationService.createConversation(userRecipient, user1Document));
+            assertThrows(NotFoundException.class, () -> conversationService.createConversation(userRecipient, user1Document));
 
             verify(userRepository).findByDocument(user1Document);
             verify(userRepository).findByDocument(userRecipient.user2Document());
