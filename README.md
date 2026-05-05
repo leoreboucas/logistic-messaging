@@ -56,9 +56,36 @@ Exceções de domínio são mapeadas por um `GlobalExceptionHandler` centralizad
 
 A aplicação está funcional e pronta para uso. As seguintes implementações estão planejadas:
 
-- [ ] Testes unitários (JUnit 5 + Mockito)
+- [x] Testes unitários (JUnit 5 + Mockito)
 - [ ] Testes de integração (Testcontainers)
-- [ ] Docker Compose unificado (logistic + messaging + Redis + ambos os bancos)
+
+---
+
+## Executando com Docker
+
+O projeto conta com um Docker Compose unificado localizado em `logistic/docker-compose.unified.yml`, que sobe todos os serviços necessários: `logistic`, `messaging`, Redis e ambos os bancos PostgreSQL.
+
+### Pré-requisitos
+
+- Docker e Docker Compose instalados
+- Arquivo `.env` criado na raiz do projeto `logistic/` (veja a seção de variáveis de ambiente)
+
+### Subindo todos os serviços
+
+```bash
+cd logistic
+docker compose --env-file .env -f docker-compose.unified.yml up --build
+```
+
+### Serviços e portas
+
+| Serviço | Porta |
+|---------|-------|
+| logistic (API) | 8080 |
+| messaging (API + WS) | 8081 |
+| logistic_db (PostgreSQL) | 5432 |
+| messaging_db (PostgreSQL) | 5433 |
+| Redis | 6379 |
 
 ---
 
@@ -77,11 +104,35 @@ A aplicação está funcional e pronta para uso. As seguintes implementações e
 
 ## Variáveis de ambiente
 
+Crie um arquivo `.env` na raiz do projeto `logistic/` com as seguintes variáveis:
+
+```env
+GEMINI_API_KEY=<chave da Google AI Studio>
+JWT_SECRET=<mínimo 32 caracteres>
+JWT_EXPIRATION=<milissegundos, ex: 86400000>
+INTERNAL_API_KEY=<chave compartilhada com o logistic>
+```
+
+As demais configurações (datasource, Redis, URL do logistic) são gerenciadas diretamente pelo `docker-compose.unified.yml`.
+
+Para execução local fora do Docker, as propriedades podem ser configuradas no `application.yaml`:
+
 ```yaml
-spring.datasource.url: jdbc:postgresql://localhost:5432/logistic_messaging
-jwt.secret: <mínimo 32 caracteres>
-jwt.expiration: <milissegundos>
-gemini.api_key: <chave da Google AI Studio>
-logistic.base_url: <url do serviço logistic>
-internal.api.key: <chave compartilhada com o logistic>
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/logistic_messaging
+  data:
+    redis:
+      host: localhost
+      port: 6379
+jwt:
+  secret: <mínimo 32 caracteres>
+  expiration: <milissegundos>
+gemini:
+  api_key: <chave da Google AI Studio>
+logistic:
+  base_url: http://localhost:8080
+internal:
+  api:
+    key: <chave compartilhada com o logistic>
 ```
